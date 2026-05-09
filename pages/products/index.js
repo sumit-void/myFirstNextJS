@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Head from "next/head";
 
-export default function Products({ products }) {
+export default function Products({ products = [] }) {
   return (
     <>
       <Head>
@@ -38,13 +38,29 @@ export default function Products({ products }) {
 
 // SSG - runs at build time
 export async function getStaticProps() {
-  const res = await fetch("https://fakestoreapi.com/products");
-  const products = await res.json();
+  try {
+    const res = await fetch("https://fakestoreapi.com/products");
+    
+    // If the API returns a 500 error or HTML, this prevents the build from crashing
+    if (!res.ok) {
+      throw new Error(`API returned status: ${res.status}`);
+    }
+    
+    const products = await res.json();
 
-  return {
-    props: {
-      products,
-    },
-    revalidate: 60, // ISR - revalidate every 60 seconds
-  };
+    return {
+      props: {
+        products: products || [],
+      },
+      revalidate: 60, // ISR - revalidate every 60 seconds
+    };
+  } catch (error) {
+    console.error("Build time fetch error:", error);
+    return {
+      props: {
+        products: [], // Fallback to empty array so build succeeds
+      },
+      revalidate: 10, // Try again sooner if it failed
+    };
+  }
 }
