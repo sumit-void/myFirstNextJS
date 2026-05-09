@@ -41,26 +41,31 @@ export async function getStaticProps() {
   try {
     const res = await fetch("https://fakestoreapi.com/products");
     
-    // If the API returns a 500 error or HTML, this prevents the build from crashing
-    if (!res.ok) {
-      throw new Error(`API returned status: ${res.status}`);
-    }
+    // Instead of res.json() which can crash the node process on Vercel if it hits Cloudflare HTML
+    // We read as text first, then parse safely
+    const text = await res.text();
     
-    const products = await res.json();
+    let products = [];
+    try {
+      products = JSON.parse(text);
+    } catch (e) {
+      console.warn("API did not return valid JSON. Returning empty array.");
+      products = [];
+    }
 
     return {
       props: {
-        products: products || [],
+        products: Array.isArray(products) ? products : [],
       },
       revalidate: 60, // ISR - revalidate every 60 seconds
     };
   } catch (error) {
-    console.error("Build time fetch error:", error);
+    console.warn("Build time fetch failed, falling back to empty products list.");
     return {
       props: {
         products: [], // Fallback to empty array so build succeeds
       },
-      revalidate: 10, // Try again sooner if it failed
+      revalidate: 10,
     };
   }
 }
