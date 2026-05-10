@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Head from "next/head";
+import Image from "next/image";
 
 export default function Products({ products = [] }) {
   return (
@@ -16,13 +17,17 @@ export default function Products({ products = [] }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product) => (
-            <Link key={product.id} href={`/products/${product.id}`}>
-              <div className="bg-white rounded shadow p-4 hover:shadow-lg transition cursor-pointer h-full">
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="w-full h-48 object-contain mb-4"
-                />
+            <Link key={product.id} href={`/products/${product.id}`} prefetch={true}>
+              <div className="bg-white rounded shadow p-4 hover:shadow-lg transition cursor-pointer h-full flex flex-col">
+                <div className="w-full h-48 relative mb-4">
+                  <Image
+                    src={product.image}
+                    alt={product.title}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                </div>
                 <h2 className="text-sm font-semibold mb-2 line-clamp-2">
                   {product.title}
                 </h2>
