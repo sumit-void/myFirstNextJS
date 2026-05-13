@@ -1,44 +1,39 @@
-import { useState, useEffect } from "react";
 import Head from "next/head";
+import Link from "next/link";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 export default function Home() {
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/hello")
-      .then((res) => res.json())
-      .then((data) => {
-        setMessage(data.message);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+  const { user } = useContext(UserContext);
 
   return (
     <>
       <Head>
-        <title>Home | MyStore</title>
-        <meta name="description" content="Welcome to MyStore - a Next.js app" />
+        <title>Expense Manager</title>
+        <meta name="description" content="Manage your expenses efficiently." />
       </Head>
-      <div className="max-w-4xl mx-auto p-8 text-center">
-        <h1 className="text-3xl font-bold mb-4">Welcome to MyStore</h1>
-        <p className="text-gray-600 mb-6">
-          This is a Next.js app demonstrating SSG, SSR, CSR, and API Routes.
+      <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-4">
+        <h1 className="text-5xl font-extrabold text-blue-600 mb-6 tracking-tight">
+          Track Your Expenses <br /> Like a Pro.
+        </h1>
+        <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+          Take control of your finances. Easily add, edit, categorize, and track your daily expenses all in one beautiful dashboard.
         </p>
-
-        {/* API Route Message */}
-        <div className="bg-white rounded shadow p-6 mt-4">
-          <h2 className="text-xl font-semibold mb-2">API Route Response:</h2>
-          {loading ? (
-            <p className="text-gray-400">Loading...</p>
-          ) : (
-            <p className="text-blue-600 text-lg font-medium">{message}</p>
-          )}
-        </div>
+        
+        {user ? (
+          <Link href="/dashboard" prefetch={true} className="bg-blue-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-1">
+            Go to Dashboard
+          </Link>
+        ) : (
+          <div className="flex gap-4">
+            <Link href="/register" prefetch={true} className="bg-blue-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-1">
+              Get Started
+            </Link>
+            <Link href="/login" prefetch={true} className="bg-white text-blue-600 border border-blue-600 font-semibold py-3 px-8 rounded-full shadow hover:bg-gray-50 transition">
+              Login
+            </Link>
+          </div>
+        )}
       </div>
     </>
   );
