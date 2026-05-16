@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
@@ -8,7 +8,14 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-  const { updateUser } = useContext(UserContext);
+  const { user, updateUser } = useContext(UserContext);
+
+  useEffect(() => {
+    // If the user is already logged in, redirect to dashboard
+    if (user) {
+      router.push("/dashboard");
+    }
+  }, [user, router]);
 
   const handleLogin = (e) => {
     e.preventDefault();
