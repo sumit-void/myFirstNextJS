@@ -8,6 +8,7 @@ export default function Navbar() {
   const handleLogout = () => {
     document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
     updateUser(null);
+    window.location.href = "/login";
   };
 
   const formattedTotal = Number(totalExpenses || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' });

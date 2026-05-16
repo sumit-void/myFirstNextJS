@@ -27,9 +27,6 @@ export default function Login() {
     // Update global state with dummy name based on email
     const name = email.split('@')[0];
     updateUser({ name, email });
-    
-    // Redirect to dashboard
-    router.push("/dashboard");
   };
 
   return (

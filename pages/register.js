@@ -27,9 +27,6 @@ export default function Register() {
     
     // Update global state
     updateUser({ name, email });
-    
-    // Redirect to dashboard
-    router.push("/dashboard");
   };
 
   return (
